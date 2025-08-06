@@ -1,0 +1,23 @@
+SELECT 
+        cif_key
+        , COUNT(cif_key) jml_frek
+        , SUM(amount) volume
+        , 'Mobile banking' AS FLAGGING
+      FROM ACL_DATALAKE.MART_TRXCHANNEL_MOBILE
+      WHERE as_of_date = '@ARGS1'
+      AND source_data IN ('QRMPM', 'MBLTRANAUDIT')
+      AND trx_desc NOT LIKE '%INQUIRY%' 
+      GROUP BY 1
+
+      UNION
+
+      SELECT 
+          cif_key
+          , COUNT(cif_key) as frek
+          , sum(amount) as volume
+          , 'WONDR' AS FLAGGING
+      FROM acl_datalake.mart_transaction_maverick
+      WHERE as_of_date = '@ARGS1'
+      group by 1
+
+-- untuk grouping berdasarkan segmen div owner, region, branch bisa tabrakin dengan dm_customer.customer_icons
