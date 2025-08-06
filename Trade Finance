@@ -1,0 +1,13 @@
+select
+			as_of_date
+			, CONCAT(left(reference,2),LEFT(RIGHT(reference,3),1)) as short_ref
+			, trim(segment_div_owner_final_int) as segment_final
+			, trim(channel_owner_l1_final_int) as region_final
+			, trim(channel_owner_l2_final_int) as cabang_final
+			, trim(channel_owner_mirror_final) as channel_owner_mirror
+			,count(*) as freq
+			,sum(amount_idr) as amount
+	from PRD_DB_SBX_IND.TRADE_SYNCH_TERA
+	-- where as_of_date between cast(concat(year(curdate() - interval 1 month),'-01','-31') as date) and last_day(curdate() - interval 1 month)
+	Where as_of_date between  '2025-06-01' and '2025-06-30'
+	group by 1,2,3,4,5,6;
