@@ -1,0 +1,462 @@
+---- Giro Reguler
+SELECT 
+	'DPK' AS type	
+	, 'GIRO_REGULER'AS measurement_name	
+	, CAST(SUM(BCG.AVG_R_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, CASE WHEN BCG.REGION_CODE IS NULL THEN NULL
+	       WHEN BCG.REGION_CODE REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(BCG.REGION_CODE, 2, 2))
+      END AS REGION_CODE
+    , NULL AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'GIRO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+UNION ALL
+
+SELECT 
+	'DPK' AS type	
+	, 'GIRO_REGULER'AS measurement_name	
+	, CAST(SUM(BCG.AVG_R_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+    , NULL AS REGION_CODE
+    , BCG.segment_div_owner AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'GIRO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+union all
+
+SELECT 
+	'DPK' AS type	
+	, 'GIRO_REGULER'AS measurement_name	
+	, CAST(SUM(BCG.AVG_R_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, bcg.branch_code AS unit_code	
+	, NULL AS REGION_CODE
+	, null AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'GIRO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'GIRO_REGULER'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_r_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, NULL AS unit_code	
+--  , NULL AS REGION_CODE
+-- 	, DEV.segment_div_owner_dash AS segment_div_owner	
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'GIRO'
+-- AND UPPER(dev.flag_kategori) = 'NON BANK'
+-- GROUP BY 1,2,4,5,6,7
+
+-- UNION ALL 
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'GIRO_REGULER'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_r_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, NULL AS unit_code	
+--  , CASE WHEN dev.CHANNEL_OWNER_L1_dash IS NULL THEN NULL
+-- 	       WHEN dev.CHANNEL_OWNER_L1_dash REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(dev.CHANNEL_OWNER_L1_dash, 2, 2))
+--    ELSE '699'
+--    END AS REGION_CODE
+--  , NULL AS segment_div_owner	
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'GIRO'
+-- AND UPPER(dev.flag_kategori) = 'NON BANK'
+-- GROUP BY 1,2,4,5,6,7
+
+-- UNION ALL
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'GIRO_REGULER'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_r_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, dev.channel_owner_l2_dash AS unit_code	
+--  , NULL AS REGION_CODE
+--  , NULL AS segment_div_owner	
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'GIRO'
+-- AND UPPER(dev.flag_kategori) = 'NON BANK'
+-- GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+--- Giro Spesial
+
+SELECT 
+	'DPK' AS type	
+	, 'GIRO_SPECIAL'AS measurement_name	
+	, CAST(SUM(BCG.avg_sr_ytd) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, CASE WHEN BCG.REGION_CODE IS NULL THEN NULL
+		   WHEN BCG.REGION_CODE REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(BCG.REGION_CODE, 2, 2))
+	  END AS REGION_CODE
+	, NULL AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'GIRO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+UNION ALL
+
+SELECT 
+	'DPK' AS type	
+	, 'GIRO_SPECIAL'AS measurement_name	
+	, CAST(SUM(BCG.avg_sr_ytd) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, NULL AS REGION_CODE
+	, bcg.segment_div_owner AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'GIRO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+union all
+
+SELECT 
+	'DPK' AS type	
+	, 'GIRO_SPECIAL'AS measurement_name	
+	, CAST(SUM(BCG.avg_sr_ytd) AS DECIMAL(38,2)) AS actual_value	
+	, bcg.branch_code AS unit_code	
+	, NULL AS REGION_CODE
+	, null AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'GIRO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'GIRO_SPECIAL'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_sr_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, NULL AS unit_code	
+--   , NULL AS REGION_CODE
+-- 	, DEV.segment_div_owner_dash AS segment_div_owner
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'GIRO'
+-- AND UPPER(dev.flag_kategori) = 'NON BANK'
+-- GROUP BY 1,2,4,5,6,7
+
+-- UNION ALL 
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'GIRO_SPECIAL'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_sr_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, NULL AS unit_code	
+--   , CASE WHEN dev.CHANNEL_OWNER_L1_dash IS NULL THEN NULL
+-- 	       WHEN dev.CHANNEL_OWNER_L1_dash REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(dev.CHANNEL_OWNER_L1_dash, 2, 2))
+--     ELSE '699'
+--     END AS REGION_CODE
+--   , NULL AS segment_div_owner	
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'GIRO'
+-- AND UPPER(dev.flag_kategori) = 'NON BANK'
+-- GROUP BY 1,2,4,5,6,7
+
+-- UNION ALL
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'GIRO_SPECIAL'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_sr_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, dev.channel_owner_l2_dash AS unit_code	
+--   , NULL AS REGION_CODE
+--   , NULL AS segment_div_owner
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'GIRO'
+-- AND UPPER(dev.flag_kategori) = 'NON BANK'
+-- GROUP BY 1,2,4,5,6,7  ---- masih belum nemu unit codenya
+
+UNION ALL
+--- Giro ALL
+SELECT 
+	'DPK' AS type	
+	, 'GIRO'AS measurement_name	
+	, CAST(SUM(BCG.SALDO_AVG_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, NULL AS REGION_CODE
+	, BCG.segment_div_owner AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'GIRO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+UNION ALL 
+
+SELECT 
+	'DPK' AS type	
+	, 'GIRO'AS measurement_name	
+	, CAST(SUM(BCG.SALDO_AVG_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+ 	, CASE WHEN BCG.REGION_CODE IS NULL THEN NULL
+	       WHEN BCG.REGION_CODE REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(BCG.REGION_CODE, 2, 2))
+	  END AS REGION_CODE
+	, NULL AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'GIRO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+UNION ALL
+
+SELECT 
+	'DPK' AS type	
+	, 'GIRO'AS measurement_name	
+	, CAST(SUM(BCG.SALDO_AVG_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, BCG.BRANCH_CODE AS unit_code	
+	, NULL AS REGION_CODE
+	, NULL AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'GIRO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'GIRO'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, NULL AS unit_code	
+--   , NULL AS REGION_CODE
+-- 	, DEV.segment_div_owner_dash AS segment_div_owner
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'GIRO'
+-- AND UPPER(dev.flag_kategori) = 'NON BANK'
+-- GROUP BY 1,2,4,5,6,7
+
+-- UNION ALL 
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'GIRO'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, NULL AS unit_code	
+--   , CASE WHEN dev.CHANNEL_OWNER_L1_dash IS NULL THEN NULL
+-- 	       WHEN dev.CHANNEL_OWNER_L1_dash REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(dev.CHANNEL_OWNER_L1_dash, 2, 2))
+--     ELSE '699'
+--     END AS REGION_CODE
+--   , NULL AS segment_div_owner
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'GIRO'
+-- AND UPPER(dev.flag_kategori) = 'NON BANK'
+-- GROUP BY 1,2,4,5,6,7
+
+-- UNION ALL
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'GIRO'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, dev.channel_owner_l2_dash AS unit_code	
+--   , NULL AS REGION_CODE
+--   , NULL AS segment_div_owner
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'GIRO'
+-- AND UPPER(dev.flag_kategori) = 'NON BANK'
+-- GROUP BY 1,2,4,5,6,7  ---- masih belum nemu unit codenya
+
+UNION ALL
+
+--- DEPOSITO ALL
+SELECT 
+	'DPK' AS type	
+	, 'DEPOSITO'AS measurement_name	
+	, CAST(SUM(BCG.SALDO_AVG_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, NULL AS REGION_CODE
+	, BCG.segment_div_owner AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'DEPOSITO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+UNION ALL 
+
+SELECT 
+	'DPK' AS type	
+	, 'DEPOSITO'AS measurement_name	
+	, CAST(SUM(BCG.SALDO_AVG_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+    , CASE WHEN BCG.REGION_CODE IS NULL THEN NULL
+	       WHEN BCG.REGION_CODE REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(BCG.REGION_CODE, 2, 2))
+      END AS REGION_CODE
+    , NULL AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'DEPOSITO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+UNION ALL
+
+SELECT 
+	'DPK' AS type	
+	, 'DEPOSITO'AS measurement_name	
+	, CAST(SUM(BCG.SALDO_AVG_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, BCG.BRANCH_CODE AS unit_code	
+	, NULL AS REGION_CODE
+	, NULL AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'DEPOSITO'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'DEPOSITO'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, NULL AS unit_code	
+--   , NULL AS REGION_CODE
+-- 	, dev.segment_div_owner_dash AS segment_div_owner	
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'DEPOSITO'
+-- AND UPPER(dev.cust_type_cd) IN ('PERORANGAN', 'NON-PERORANGAN')
+-- GROUP BY 1,2,4,5,6,7
+
+-- UNION ALL 
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'DEPOSITO'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, NULL AS unit_code	
+--   , CASE WHEN dev.CHANNEL_OWNER_L1_dash IS NULL THEN NULL
+-- 	       WHEN dev.CHANNEL_OWNER_L1_dash REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(dev.CHANNEL_OWNER_L1_dash, 2, 2))
+--     ELSE '699'
+--     END AS REGION_CODE
+--   , NULL AS segment_div_owner	
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'DEPOSITO'
+-- AND UPPER(dev.cust_type_cd) IN ('PERORANGAN', 'NON-PERORANGAN')
+-- GROUP BY 1,2,4,5,6,7
+
+-- UNION ALL
+
+-- SELECT 
+-- 	'DPK' AS type	
+-- 	, 'DEPOSITO'AS measurement_name	
+-- 	, CAST(SUM(dev.avg_book_bal_ytd_idr) AS DECIMAL(38,2)) AS actual_value	
+-- 	, dev.channel_owner_l2_dash AS unit_code	
+--   , NULL AS REGION_CODE
+--   , NULL AS segment_div_owner	
+-- 	, dev.AS_OF_DATE AS tanggal
+-- FROM prd_db_sbx_ind.dash_dpk_nwow_revamp_v5 dev
+-- WHERE AS_OF_DATE = '2025-06-30'
+-- AND UPPER(dev.produk) = 'DEPOSITO'
+-- AND UPPER(dev.cust_type_cd) IN ('PERORANGAN', 'NON-PERORANGAN')
+-- GROUP BY 1,2,4,5,6,7  ---- masih belum nemu unit codenya
+
+UNION ALL
+
+--- TABUNGAN ALL
+SELECT 
+	'DPK' AS type	
+	, 'TABUNGAN'AS measurement_name	
+	, CAST(SUM(BCG.SALDO_AVG_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, NULL AS REGION_CODE
+	, BCG.segment_div_owner AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'TABUNGAN'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+UNION ALL 
+
+SELECT 
+	'DPK' AS type	
+	, 'TABUNGAN'AS measurement_name	
+	, CAST(SUM(BCG.SALDO_AVG_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+    , CASE WHEN BCG.REGION_CODE IS NULL THEN NULL
+	       WHEN BCG.REGION_CODE REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(BCG.REGION_CODE, 2, 2))
+      END AS REGION_CODE
+    , NULL AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'TABUNGAN'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
+
+UNION ALL
+
+SELECT 
+	'DPK' AS type	
+	, 'TABUNGAN'AS measurement_name	
+	, CAST(SUM(BCG.SALDO_AVG_YTD) AS DECIMAL(38,2)) AS actual_value	
+	, BCG.BRANCH_CODE AS unit_code	
+	, NULL AS REGION_CODE
+	, NULL AS segment_div_owner	
+	, BCG.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.BCG_MART_DASH_DPK_V4_NWOW BCG
+WHERE AS_OF_DATE = '2025-06-30'
+AND UPPER(FLAG_PRODUK) = 'TABUNGAN'
+AND FLAG_KATEGORI = 'NON_BANK_ORIGIN'
+AND REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18', 'W80')
+GROUP BY 1,2,4,5,6,7 
