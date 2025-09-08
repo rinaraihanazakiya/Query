@@ -1,0 +1,53 @@
+SELECT 
+    'LOAN' AS type,
+    'LOAN' AS measurement_name,
+    CAST(SUM(loan.avg_loan_principal_ytd_idr) AS DECIMAL(38,2)) AS actual_value,
+    CASE 
+        WHEN REGEXP_LIKE(loan.channel_owner_l1, '^W[0-9][0-9]$') 
+            THEN CONCAT(loan.channel_owner_l2, ' - ', loan.branch_name_pms)
+        ELSE CONCAT(loan.channel_owner_l1, ' - ', loan.branch_name_pms)
+    END AS unit_code,
+    NULL AS region_code,
+    NULL AS segment_div_owner,
+    loan.as_of_date AS tanggal
+FROM prd_db_sbx_ind.dashboard_loan_baseline loan
+WHERE loan.as_of_date = '2025-06-30'
+GROUP BY 
+    1,2,
+    CASE 
+        WHEN REGEXP_LIKE(loan.channel_owner_l1, '^W[0-9][0-9]$') 
+            THEN CONCAT(loan.channel_owner_l2, ' - ', loan.branch_name_pms)
+        ELSE CONCAT(loan.channel_owner_l1, ' - ', loan.branch_name_pms)
+    END,
+    5,6,7
+    
+UNION ALL
+
+SELECT 
+	'LOAN' AS type	
+	, 'LOAN'AS measurement_name	
+	, CAST(SUM(loan.avg_loan_principal_ytd_idr)/1000000 AS DECIMAL(38,2)) AS actual_value	
+	, NULL as unit_code	
+  , CASE WHEN loan.CHANNEL_OWNER_L1 IS NULL THEN NULL
+	       WHEN loan.CHANNEL_OWNER_L1 REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(loan.CHANNEL_OWNER_L1, 2, 2))
+    ELSE '699' 
+    END AS REGION_CODE
+	, NULL AS segment_div_owner	
+	, loan.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.dashboard_loan_baseline loan 
+WHERE AS_OF_DATE = '2025-06-30'
+GROUP BY 1,2,4,5,6,7 --- sudah sesuai dashboard
+
+UNION ALL
+
+SELECT 
+	'LOAN' AS type	
+	, 'LOAN'AS measurement_name	
+	, CAST(SUM(loan.avg_loan_principal_ytd_idr)/1000000 AS DECIMAL(38,2)) AS actual_value	
+	, NULL as unit_code	
+  , null AS REGION_CODE
+	, segment_div_owner AS segment_div_owner	
+	, loan.AS_OF_DATE AS tanggal
+FROM prd_db_sbx_ind.dashboard_loan_baseline loan 
+WHERE AS_OF_DATE = '2025-06-30'
+GROUP BY 1,2,4,5,6,7
