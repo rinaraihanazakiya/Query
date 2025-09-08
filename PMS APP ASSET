@@ -1,0 +1,293 @@
+--- KOL_1_RESTRUK
+SELECT 
+    'ASSET' AS type,
+    'KOL_1_RESTRUK' AS measurement_name,
+    CAST(SUM(aset.ratio) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    NULL AS region_code,
+    aset.SEGMENT_DIV_OWNER AS segment_div_owner,
+    aset.tanggal AS tanggal
+FROM  prd_db_sbx_ind.master_asset_quality_segment_v3 aset
+WHERE aset.tanggal = '2025-06-30'
+AND upper(aset.kolektibilitas) = 'KOL 1 RESTRUK'
+GROUP BY 1,2,4,5,6,7
+
+
+union all
+
+SELECT 
+    'ASSET' AS type,
+    'KOL_1_RESTRUK' AS measurement_name,
+    CAST(SUM(rg.ratio) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    CASE WHEN rg.region_code IS NULL THEN NULL
+	       WHEN rg.region_code REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(rg.region_code, 2, 2))
+    END AS region_code,
+    NULL AS segment_div_owner,
+    rg.tanggal AS tanggal
+FROM prd_db_sbx_ind.master_asset_quality_region_v2  rg 
+WHERE REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18')
+AND rg.tanggal = '2025-06-30'
+AND upper(rg.kolektibilitas) = 'KOL 1 RESTRUK'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+SELECT 
+    'ASSET' AS type,
+    'KOL_1_RESTRUK' AS measurement_name,
+    CAST(SUM(BR.ratio) AS DECIMAL(38,2)) AS actual_value,
+    BR.branch_code AS unit_code,
+    NULL AS region_code,
+    NULL AS segment_div_owner,
+    BR.date_process AS tanggal
+FROM  PRD_DB_SBX_IND.MASTER_ASSET_QUALITY_BRANCH BR
+WHERE CAST(branch_code AS INT) between 1 and 600
+AND BR.date_process = '2025-06-30'
+AND upper(BR.kolektibilitas) = 'KOL 1 RESTRUK'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+--- PRA NPL
+SELECT 
+    'ASSET' AS type,
+    'PRA_NPL(%)' AS measurement_name,
+    CAST(SUM(aset.ratio) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    NULL AS region_code,
+    aset.SEGMENT_DIV_OWNER AS segment_div_owner,
+    aset.tanggal AS tanggal
+FROM  prd_db_sbx_ind.master_asset_quality_segment_v3 aset
+WHERE aset.tanggal = '2025-06-30'
+AND upper(aset.kolektibilitas) = 'PRA NPL'
+GROUP BY 1,2,4,5,6,7
+
+union all
+
+SELECT 
+    'ASSET' AS type,
+    'PRA_NPL(%)' AS measurement_name,
+    CAST(SUM(rg.ratio) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    CASE WHEN rg.region_code IS NULL THEN NULL
+	       WHEN rg.region_code REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(rg.region_code, 2, 2))
+    END AS region_code,
+    NULL AS segment_div_owner,
+    rg.tanggal AS tanggal
+FROM prd_db_sbx_ind.master_asset_quality_region_v2 rg
+WHERE REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18')
+and rg.tanggal = '2025-06-30'
+AND upper(rg.kolektibilitas) = 'PRA NPL'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+SELECT 
+    'ASSET' AS type,
+    'PRA_NPL(%)' AS measurement_name,
+    CAST(SUM(BR.ratio) AS DECIMAL(38,2)) AS actual_value,
+    BR.branch_code AS unit_code,
+    NULL AS region_code,
+    NULL AS segment_div_owner,
+    BR.date_process AS tanggal
+FROM  PRD_DB_SBX_IND.MASTER_ASSET_QUALITY_BRANCH BR
+WHERE CAST(branch_code AS INT) between 1 and 600
+AND BR.date_process = '2025-06-30'
+AND upper(BR.kolektibilitas) = 'PRA NPL'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+--- NET NEW NPL
+SELECT 
+    'ASSET' AS type,
+    'NET_NEW_NPL' AS measurement_name,
+    CAST(SUM(aset.net_new_npl) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    NULL AS region_code,
+    aset.SEGMENT_DIV_OWNER AS segment_div_owner,
+    aset.tanggal AS tanggal
+FROM  prd_db_sbx_ind.master_asset_quality_segment_v3 aset
+WHERE aset.tanggal = '2025-06-30'
+GROUP BY 1,2,4,5,6,7
+
+union all
+
+SELECT 
+    'ASSET' AS type,
+    'NET_NEW_NPL' AS measurement_name,
+    CAST(SUM(rg.net_new_npl) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    CASE WHEN rg.region_code IS NULL THEN NULL
+	       WHEN rg.region_code REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(rg.region_code, 2, 2))
+    END AS region_code,
+    NULL AS segment_div_owner,
+    rg.tanggal AS tanggal
+FROM prd_db_sbx_ind.master_asset_quality_region_v2 rg
+WHERE REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18')
+and rg.tanggal = '2025-06-30'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+SELECT 
+    'ASSET' AS type,
+    'NET_NEW_NPL' AS measurement_name,
+    CAST(SUM(BR.net_new_npl) AS DECIMAL(38,2)) AS actual_value,
+    BR.branch_code AS unit_code,
+    NULL AS region_code,
+    NULL AS segment_div_owner,
+    BR.date_process AS tanggal
+FROM  PRD_DB_SBX_IND.MASTER_ASSET_QUALITY_BRANCH BR
+WHERE CAST(branch_code AS INT) between 1 and 600
+AND BR.date_process = '2025-06-30'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+--- NPL_RATIO
+SELECT 
+    'ASSET' AS type,
+    'NPL_RATIO(%)' AS measurement_name,
+    CAST(SUM(aset.RATIO) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    NULL AS region_code,
+    aset.SEGMENT_DIV_OWNER AS segment_div_owner,
+    aset.tanggal AS tanggal
+FROM  prd_db_sbx_ind.master_asset_quality_segment_v3 aset
+WHERE aset.tanggal = '2025-06-30'
+AND upper(aset.kolektibilitas) = 'NPL'
+GROUP BY 1,2,4,5,6,7
+
+union all
+
+SELECT 
+    'ASSET' AS type,
+    'NPL_RATIO(%)' AS measurement_name,
+    CAST(SUM(rg.RATIO) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    CASE WHEN rg.region_code IS NULL THEN NULL
+	       WHEN rg.region_code REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(rg.region_code, 2, 2))
+    END AS region_code,
+    NULL AS segment_div_owner,
+    rg.tanggal AS tanggal
+FROM prd_db_sbx_ind.master_asset_quality_region_v2 rg
+WHERE REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18')
+and rg.tanggal = '2025-06-30'
+AND upper(rg.kolektibilitas) = 'NPL'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+SELECT 
+    'ASSET' AS type,
+    'NPL_RATIO(%)' AS measurement_name,
+    CAST(SUM(BR.RATIO) AS DECIMAL(38,2)) AS actual_value,
+    BR.branch_code AS unit_code,
+    NULL AS region_code,
+    NULL AS segment_div_owner,
+    BR.date_process AS tanggal
+FROM  PRD_DB_SBX_IND.MASTER_ASSET_QUALITY_BRANCH BR
+WHERE CAST(branch_code AS INT) between 1 and 600
+AND BR.date_process = '2025-06-30'
+AND upper(BR.kolektibilitas) = 'NPL'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+--- LAR_RATIO
+SELECT 
+    'ASSET' AS type,
+    'LAR_RATIO(%)' AS measurement_name,
+    CAST(SUM(aset.RATIO) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    NULL AS region_code,
+    aset.SEGMENT_DIV_OWNER AS segment_div_owner,
+    aset.tanggal AS tanggal
+FROM  prd_db_sbx_ind.master_asset_quality_segment_v3 aset
+WHERE aset.tanggal = '2025-06-30'
+AND upper(aset.kolektibilitas) = 'LAR'
+GROUP BY 1,2,4,5,6,7
+
+union all
+
+SELECT 
+    'ASSET' AS type,
+    'LAR_RATIO(%)' AS measurement_name,
+    CAST(SUM(rg.RATIO) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    CASE WHEN rg.region_code IS NULL THEN NULL
+	       WHEN rg.region_code REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(rg.region_code, 2, 2))
+    END AS region_code,
+    NULL AS segment_div_owner,
+    rg.tanggal AS tanggal
+FROM prd_db_sbx_ind.master_asset_quality_region_v2 rg
+WHERE REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18')
+and rg.tanggal = '2025-06-30'
+AND upper(rg.kolektibilitas) = 'LAR'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+SELECT 
+    'ASSET' AS type,
+    'LAR_RATIO(%)' AS measurement_name,
+    CAST(SUM(BR.RATIO) AS DECIMAL(38,2)) AS actual_value,
+    BR.branch_code AS unit_code,
+    NULL AS region_code,
+    NULL AS segment_div_owner,
+    BR.date_process AS tanggal
+FROM  PRD_DB_SBX_IND.MASTER_ASSET_QUALITY_BRANCH BR
+WHERE CAST(branch_code AS INT) between 1 and 600
+AND BR.date_process = '2025-06-30'
+AND upper(BR.kolektibilitas) = 'LAR'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+--- LAR_EXISTING
+SELECT 
+    'ASSET' AS type,
+    'LAR_EXISTING' AS measurement_name,
+    CAST(SUM(aset.nilai_existing) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    NULL AS region_code,
+    aset.SEGMENT_DIV_OWNER AS segment_div_owner,
+    aset.tanggal AS tanggal
+FROM  prd_db_sbx_ind.master_asset_quality_segment_v3 aset
+WHERE aset.tanggal = '2025-06-30'
+AND upper(aset.kolektibilitas) = 'LAR'
+GROUP BY 1,2,4,5,6,7
+
+union all
+
+SELECT 
+    'ASSET' AS type,
+    'LAR_EXISTING' AS measurement_name,
+    CAST(SUM(rg.nilai_existing) AS DECIMAL(38,2)) AS actual_value,
+    NULL AS unit_code,
+    CASE WHEN rg.region_code IS NULL THEN NULL
+	       WHEN rg.region_code REGEXP '^W[0-9][0-9]$' THEN CONCAT('6', SUBSTR(rg.region_code, 2, 2))
+    END AS region_code,
+    NULL AS segment_div_owner,
+    rg.tanggal AS tanggal
+FROM prd_db_sbx_ind.master_asset_quality_region_v2 rg
+WHERE REGION_CODE IN ('W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15', 'W16', 'W17', 'W18')
+and rg.tanggal = '2025-06-30'
+AND upper(rg.kolektibilitas) = 'LAR'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+SELECT 
+    'ASSET' AS type,
+    'LAR_EXISTING' AS measurement_name,
+    CAST(SUM(BR.nilai_existing) AS DECIMAL(38,2)) AS actual_value,
+    BR.branch_code AS unit_code,
+    NULL AS region_code,
+    NULL AS segment_div_owner,
+    BR.date_process AS tanggal
+FROM  PRD_DB_SBX_IND.MASTER_ASSET_QUALITY_BRANCH BR
+WHERE CAST(branch_code AS INT) between 1 and 600
+AND BR.date_process = '2025-06-30'
+AND upper(BR.kolektibilitas) = 'LAR'
+GROUP BY 1,2,4,5,6,7
