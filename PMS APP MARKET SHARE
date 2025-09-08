@@ -1,0 +1,95 @@
+--- CASA 
+SELECT 
+	'MARKET_SHARE' AS type	
+	, 'MARKET_SHARE_CASA_BNI'AS measurement_name	
+	, CAST((SUM(MARKET.DPK_BNI) / SUM(MARKET.DPK_BI * 1000000)*100) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, CONCAT('6', LPAD(CAST(MARKET.REGION_CODE AS STRING), 2, '0')) AS region_code
+	, null AS segment_div_owner	
+	, market.periode AS tanggal
+FROM prd_db_sbx_ind.market_share_dpk_v2 market
+where periode = trunc('2025-06-30', 'MM')
+AND UPPER(market.flag_produk) IN ('TABUNGAN', 'GIRO')
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+--- Tabungan
+SELECT 
+	'MARKET_SHARE' AS type	
+	, 'MARKET_SHARE_TABUNGAN_BNI'AS measurement_name
+	, CAST((SUM(MARKET.DPK_BNI) / SUM(MARKET.DPK_BI * 1000000)*100) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, CONCAT('6', LPAD(CAST(MARKET.REGION_CODE AS STRING), 2, '0')) AS region_code
+	, null AS segment_div_owner	
+	, market.periode AS tanggal
+-- 	, '2025-06-30' as tanggal
+FROM prd_db_sbx_ind.market_share_dpk_v2 market
+WHERE periode = trunc('2025-06-30', 'MM')
+AND UPPER(market.flag_produk) = 'TABUNGAN'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+--- Giro BNI
+SELECT 
+	'MARKET_SHARE' AS type	
+	, 'MARKET_SHARE_GIRO_BNI'AS measurement_name	
+	, CAST((SUM(MARKET.DPK_BNI) / SUM(MARKET.DPK_BI * 1000000)*100) AS DECIMAL(38,2)) AS actual_value		
+	, NULL AS unit_code	
+	, CONCAT('6', LPAD(CAST(MARKET.REGION_CODE AS STRING), 2, '0')) AS region_code
+	, null AS segment_div_owner	
+	, market.periode AS tanggal
+FROM prd_db_sbx_ind.market_share_dpk_v2 market
+WHERE periode = trunc('2025-06-30', 'MM')
+AND UPPER(market.flag_produk) = 'GIRO'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+-- Tabungan Wilayah/Cabang
+SELECT 
+	'MARKET_SHARE' AS type	
+	, 'MARKET_SHARE_TABUNGAN_AREA'AS measurement_name
+	, CAST((SUM(MARKET.DPK_BNI_AREA) / SUM(MARKET.DPK_BI * 1000000)*100) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, CONCAT('6', LPAD(CAST(MARKET.REGION_CODE AS STRING), 2, '0')) AS region_code
+	, null AS segment_div_owner	
+	, market.periode AS tanggal
+-- 	, '2025-06-30' as tanggal
+FROM prd_db_sbx_ind.market_share_dpk_v2 market
+WHERE periode = trunc('2025-06-30', 'MM')
+AND UPPER(market.flag_produk) = 'TABUNGAN'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+--- GIRO WILAYAH/CABANG
+SELECT 
+	'MARKET_SHARE' AS type	
+	, 'MARKET_SHARE_GIRO_AREA'AS measurement_name
+	, CAST((SUM(MARKET.DPK_BNI_AREA) / SUM(MARKET.DPK_BI * 1000000)*100) AS DECIMAL(38,2)) AS actual_value	
+	, NULL AS unit_code	
+	, CONCAT('6', LPAD(CAST(MARKET.REGION_CODE AS STRING), 2, '0')) AS region_code
+	, null AS segment_div_owner	
+	, market.periode AS tanggal
+-- 	, '2025-06-30' as tanggal
+FROM prd_db_sbx_ind.market_share_dpk_v2 market
+WHERE periode = trunc('2025-06-30', 'MM')
+AND UPPER(market.flag_produk) = 'GIRO'
+GROUP BY 1,2,4,5,6,7
+
+UNION ALL
+
+-- KREDIT
+SELECT 
+	'MARKET_SHARE' AS type	
+	, 'MARKET_SHARE_LOAN'AS measurement_name	
+	, CAST((SUM(market_loan.loan_bni) / SUM(market_loan.loan_bi * 1000000)*100) AS DECIMAL(38,2)) AS actual_value		
+	, NULL AS unit_code	
+	, CONCAT('6', LPAD(CAST(market_loan.REGION_CODE AS STRING), 2, '0')) AS region_code
+	, null AS segment_div_owner	
+	, market_loan.periode AS tanggal
+FROM prd_db_sbx_ind.market_share_loan_v2 market_loan
+WHERE periode = trunc('2025-06-30', 'MM')
+GROUP BY 1,2,4,5,6,7
